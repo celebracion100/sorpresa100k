@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Gracias por los 100K!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'MiFuenteCustom';
+            src: url('font1.ttf') format('truetype');
+        }
+
+        :root {
+            --color-acento: #39ff14;
+            --color-boton-hover: #32e010; 
+            --color-texto: #111111;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: url('fondo1.PNG') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Capa de estrellas flotantes (Detrás del contenido, delante del fondo) */
+        .capa-estrellas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .estrella {
+            position: absolute;
+            pointer-events: none;
+            animation: subirEstrella linear infinite;
+        }
+
+        .estrella img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        @keyframes subirEstrella {
+            0% { transform: translateY(105vh) rotate(0deg) scale(0.5); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        /* Pantalla 1: Entrada de nombre */
+        #pantalla-inicio-wrapper {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            padding: 20px;
+        }
+
+        #pantalla-inicio {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 35px 25px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            border: 2px solid #111;
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        #pantalla-inicio h1 {
+            font-family: 'MiFuenteCustom', sans-serif;
+            color: var(--color-texto);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        #pantalla-inicio p {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            white-space: pre-line;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #111;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 20px;
+            outline: none;
+            background: #fff;
+            color: var(--color-texto);
+            user-select: text;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.6);
+        }
+
+        button {
+            background: var(--color-acento);
+            color: var(--color-texto);
+            border: 2px solid #111;
+            padding: 14px 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'MiFuenteCustom', sans-serif;
+            box-shadow: 0 6px 0px #111;
+            transition: transform 0.1s, background 0.2s, box-shadow 0.1s;
+        }
+
+        button:hover { background: var(--color-boton-hover); }
+        button:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0px #111;
+        }
+
+        /* Contenedor de Slides Verticales */
+        #contenedor-slides {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            position: relative;
+            z-index: 10;
+        }
+
+        #contenedor-slides::-webkit-scrollbar { display: none; }
+
+        .seccion-slide {
+            height: 100vh;
+            width: 100vw;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            position: relative;
+        }
+
+        .nombre-usuario {
+            font-family: 'MiFuenteCustom', sans-serif;
+            font-size: 2.3rem;
+            color: var(--color-texto);
+    background: rgba(255, 255, 255, 0.92);
+            padding: 4px 20px;
+            border-radius: 15px;
+            border: 2px solid #111;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .contenido-pastel-fandom {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            max-width: 620px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .columna-pastel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #contenedor-pastel {
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Pastel un poco más grande */
+        #imagen-pastel {
+            width: 225px;
+            height: 225px;
+            object-fit: contain;
+            pointer-events: none;
+            mix-blend-mode: multiply; 
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+        }
+
+        .rebote { animation: efectoBounce 0.4s ease; }
+
+        @keyframes efectoBounce {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.25, 0.75); }
+            50% { transform: scale(0.85, 1.15); }
+            70% { transform: scale(1.08, 0.92); }
+        }
+
+        .pista-clic {
+            color: #111;
+            background: var(--color-acento);
+            padding: 4px 12px;
+            border-radius: 10px;
+            border: 2px solid #111;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            font-weight: 700;
+            box-shadow: 0 3px 0px #111;
+            text-align: center;
+        }
+
+        .caja-encuesta {
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #111;
+            border-radius: 18px;
+            padding: 15px;
+            width: 230px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .caja-encuesta h3 {
+            font-family: 'MiFuenteCustom', sans-serif;
+            font-size: 1rem;
+            color: var(--color-texto);
+            margin-bottom: 8px;
+        }
+
+        .btn-fandom {
+            background: #fff;
+            color: #111;
+            border: 2px solid #111;
+            padding: 7px 10px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 5px;
+            box-shadow: 0 3px 0px #111;
+            transition: all 0.1s;
+        }
+
+        .btn-fandom:hover { background: var(--color-acento); }
+        .btn-fandom:active { transform: translateY(2px); box-shadow: 0 1px 0px #111; }
+
+        #resultado-voto {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 4px;
+            color: #111;
+        }
+
+        .mensaje-gracias {
+            background: #ffffff;
+            border: 2px solid #111;
+            padding: 10px 18px;
+            border-radius: 18px;
+            color: var(--color-texto);
+            font-size: 0.95rem;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            margin-top: 6px;
+        }
+
+        .indicador-deslizar {
+            position: absolute;
+            bottom: 12px;
+            background: #111;
+            color: var(--color-acento);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            animation: flotarFlecha 1.5s infinite ease-in-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            font-family: 'MiFuenteCustom', sans-serif;
+        }
+
+        @keyframes flotarFlecha {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(5px); }
+        }
+
+        /* Contenedor del Slide con Título Gigante Afuera */
+        .slide-con-titulo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 420px;
+            width: 92%;
+            position: relative;
+        }
+
+        .contenedor-titulo-con-carta {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .icono-carta-flotante {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            animation: latirCarta 1.5s infinite ease-in-out;
+            z-index: 5;
+        }
+
+        .icono-carta-flotante:hover {
+            transform: translateY(-50%) scale(1.15);
+        }
+
+        @keyframes latirCarta {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.08); }
+        }
+
+        .titulo-externo-gigante {
+            width: 100%;
+            max-height: 130px;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
+            display: block;
+        }
+
+        #modal-carta {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            animation: fadeInModal 0.2s ease;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .imagen-carta-abierta {
+            max-width: 90vw;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 4px solid #fff;
+            animation: zoomInModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        @keyframes zoomInModal {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .tarjeta-historia {
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #111;
+            border-radius: 22px;
+            padding: 10px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-height: 82vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tarjeta-historia img.img-contenido {
+            width: 100%;
+            max-height: 52vh;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .caja-peticion {
+            margin-top: 8px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .caja-peticion p {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #111;
+            margin-bottom: 5px;
+        }
+
+        .caja-peticion input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #111;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 6px;
+            outline: none;
+            user-select: text;
+        }
+
+        .btn-enviar-correo {
+            background: var(--color-acento);
+            color: #111;
+            border: 2px solid #111;
+            padding: 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 0px #111;
+            font-family: 'MiFuenteCustom', sans-serif;
+        }
+
+        #estado-envio {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #111;
+        }
+
+        .particula {
+            position: fixed;
+            pointer-events: none;
+            z-index: 30;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="capa-estrellas" id="capa-estrellas"></div>
+
+    <div id="modal-carta" onclick="cerrarCarta()">
+        <img src="carta2.PNG" class="imagen-carta-abierta" alt="Carta Abierta">
+    </div>
+
+    <audio id="audio-cancion" src="Cancion1.mp3" preload="auto" loop></audio>
+    <audio id="audio-bite" src="bite1.mp3" preload="auto"></audio>
+    <audio id="audio-bite2" src="bite2.mp3" preload="auto"></audio>
+
+    <div id="pantalla-inicio-wrapper">
+        <div id="pantalla-inicio">
+            <h1>¡100K AL FIIIIN! 🥳🎉</h1>
+            <p>¡Pon tu nombre aquí!</p>
+            <input type="text" id="input-nombre" placeholder="Escribe tu nombre..." maxlength="25" autocomplete="off">
+            <button onclick="iniciarSorpresa()">Abrir mi regalo ✨</button>
+        </div>
+    </div>
+
+    <div id="contenedor-slides">
+        
+        <!-- SLIDE 1 -->
+        <section class="seccion-slide" id="slide-1">
+            <div class="nombre-usuario" id="saludo-nombre">¡Hola!</div>
+            
+            <div class="contenido-pastel-fandom">
+                <div class="columna-pastel">
+                    <div id="contenedor-pastel" onclick="tocarPastel()" ontouchend="tocarPastel(); event.preventDefault();">
+                        <img src="pastel.PNG" id="imagen-pastel" alt="Pastel de 100k">
+                    </div>
+                    <div class="pista-clic">👆 ¡Toca el pastel!</div>
+                </div>
+
+                <div class="caja-encuesta">
+                    <h3>¿Cómo debería llamarse el fandom?</h3>
+                    <button class="btn-fandom" onclick="votarFandom('Starlights')">⭐ Starlights</button>
+                    <button class="btn-fandom" onclick="votarFandom('Starlings')">✨ Starlings</button>
+                    <div id="resultado-voto"></div>
+                </div>
+            </div>
+
+            <div class="mensaje-gracias">
+                Esto es para ti, gracias por venir. 💚
+            </div>
+
+            <div class="indicador-deslizar" onclick="irASlide('slide-2')">
+                Desliza hacia abajo ⬇️
+            </div>
+        </section>
+
+        <!-- SLIDE 2 -->
+        <section class="seccion-slide" id="slide-2">
+            <div class="slide-con-titulo">
+                <img src="titulo1.PNG" class="titulo-externo-gigante" alt="Título 1">
+                <div class="tarjeta-historia">
+                    <img src="mensaje1.PNG" class="img-contenido" alt="Mensaje 1">
+                </div>
+            </div>
+            <div class="indicador-deslizar" onclick="irASlide('slide-3')">
+                Sigue bajando ⬇️
+            </div>
+        </section>
+
+        <!-- SLIDE 3 -->
+        <section class="seccion-slide" id="slide-3">
+            <div class="slide-con-titulo">
+                <img src="titulo2.PNG" class="titulo-externo-gigante" alt="Título 2">
+                <div class="tarjeta-historia">
+                    <img src="mensaje2.PNG" class="img-contenido" alt="Mensaje 2">
+                </div>
+            </div>
+            <div class="indicador-deslizar" onclick="irASlide('slide-4')">
+                Sigue bajando ⬇️
+            </div>
+        </section>
+
+        <!-- SLIDE 4 -->
+        <section class="seccion-slide" id="slide-4">
+            <div class="slide-con-titulo">
+                <img src="titulo3.PNG" class="titulo-externo-gigante" alt="Título 3">
+                <div class="tarjeta-historia">
+                    <img src="mensaje3.PNG" class="img-contenido" alt="Mensaje 3">
+                </div>
+            </div>
+            <div class="indicador-deslizar" onclick="irASlide('slide-5')">
+                Sigue bajando ⬇️
+            </div>
+        </section>
+
+        <!-- SLIDE 5 -->
+        <section class="seccion-slide" id="slide-5">
+            <div class="slide-con-titulo">
+                <div class="contenedor-titulo-con-carta">
+                    <img src="carta1.PNG" class="icono-carta-flotante" alt="Abrir Carta" onclick="abrirCarta()" title="¡Toca para leer mi carta! 💌">
+                    <img src="titulo4.PNG" class="titulo-externo-gigante" alt="Título 4">
+                </div>
+                <div class="tarjeta-historia">
+                    <img src="mensaje4.PNG" class="img-contenido" alt="Mensaje 4">
+                </div>
+            </div>
+            <div class="indicador-deslizar" onclick="irASlide('slide-6')">
+                Sigue bajando ⬇️
+            </div>
+        </section>
+
+        <!-- SLIDE 6 -->
+        <section class="seccion-slide" id="slide-6">
+            <div class="slide-con-titulo">
+                <img src="titulo5.PNG" class="titulo-externo-gigante" alt="Título 5">
+                <div class="tarjeta-historia">
+                    <img src="mensaje5.PNG" class="img-contenido" alt="Mensaje 5">
+                </div>
+            </div>
+            <div class="indicador-deslizar" onclick="irASlide('slide-7')">
+                Sigue bajando ⬇️
+            </div>
+        </section>
+
+        <!-- SLIDE 7 -->
+        <section class="seccion-slide" id="slide-7">
+            <div class="slide-con-titulo">
+                <img src="titulo6.PNG" class="titulo-externo-gigante" alt="Título 6">
+                <div class="tarjeta-historia">
+                    <img src="mensaje6.PNG" class="img-contenido" alt="Mensaje 6">
+                </div>
+            </div>
+            <div class="indicador-deslizar" onclick="irASlide('slide-8')">
+                Un último mensaje ⬇️
+            </div>
+        </section>
+
+        <!-- SLIDE 8 -->
+        <section class="seccion-slide" id="slide-8">
+            <div class="tarjeta-historia">
+                <img src="mensaje7.PNG" class="img-contenido" alt="Mensaje 7">
+                <div class="caja-peticion">
+                    <p>🎵 Como regalo estaré cantando las canciones que pidas, ¿cuál te gustaría que te cante?</p>
+                    <input type="text" id="input-cancion" placeholder="Escribe la canción o tu mensaje..." maxlength="150">
+                    <button class="btn-enviar-correo" id="btn-enviar" onclick="enviarMensajeDirecto()">Enviar mi petición ✨</button>
+                    <div id="estado-envio"></div>
+                </div>
+            </div>
+            <div class="indicador-deslizar" onclick="irASlide('slide-1')" style="background: var(--color-acento); color: #111; border: 2px solid #111;">
+                Volver al pastel 🎂⬆️
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const imagenesFlores = [
+            'flor1.PNG',
+            'flor2.PNG',
+            'flor3.PNG',
+            'flor4.PNG',
+            'flor5.PNG'
+        ];
+
+        let nombreUsuarioGlobal = "Starlight";
+        let votoFandomGlobal = "Aún no ha votado";
+        let pasoPastel = 0;
+
+        function iniciarSorpresa() {
+            const input = document.getElementById('input-nombre').value.trim();
+            nombreUsuarioGlobal = input !== "" ? input : "Starlight";
+
+            document.getElementById('saludo-nombre').innerText = `¡${nombreUsuarioGlobal}!`;
+
+            document.getElementById('pantalla-inicio-wrapper').style.display = 'none';
+            document.getElementById('contenedor-slides').style.display = 'block';
+
+            const musica = document.getElementById('audio-cancion');
+            musica.play().catch(e => console.log("Audio play prevented:", e));
+
+            const bite = document.getElementById('audio-bite');
+            bite.load();
+            const bite2 = document.getElementById('audio-bite2');
+            bite2.load();
+
+            explosionDeFlores();
+            setInterval(crearEstrellaSubiendo, 300);
+        }
+
+        function abrirCarta() {
+            document.getElementById('modal-carta').style.display = 'flex';
+        }
+
+        function cerrarCarta() {
+            document.getElementById('modal-carta').style.display = 'none';
+        }
+
+        function votarFandom(opcion) {
+            votoFandomGlobal = opcion;
+            document.getElementById('resultado-voto').innerText = `¡Gracias! Votaste por ${opcion} ❤️`;
+            const botones = document.querySelectorAll('.btn-fandom');
+            botones.forEach(b => {
+                b.disabled = true;
+                b.style.opacity = '0.6';
+            });
+        }
+
+        function enviarMensajeDirecto() {
+            const mensaje = document.getElementById('input-cancion').value.trim();
+            const estado = document.getElementById('estado-envio');
+            const boton = document.getElementById('btn-enviar');
+
+            if (mensaje === "") {
+                estado.innerText = "¡Escribe primero tu canción o mensaje! ✍️";
+                return;
+            }
+
+            boton.disabled = true;
+            boton.innerText = "Enviando... ⏳";
+            estado.innerText = "";
+
+            fetch("https://formsubmit.co/ajax/annie221@outlook.es", {
+                method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: `🎉 Nueva petición y voto de ${nombreUsuarioGlobal}`,
+                    Seguidor: nombreUsuarioGlobal,
+                    Voto_Fandom: votoFandomGlobal,
+                    Peticion_o_Mensaje: mensaje
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                estado.innerText = "¡Enviado con éxito! Gracias por tu mensaje ❤️✨";
+                boton.innerText = "¡Petición enviada! ✅";
+                document.getElementById('input-cancion').value = "";
+            })
+            .catch(error => {
+                estado.innerText = "Hubo un error de conexión, intenta de nuevo.";
+                boton.disabled = false;
+                boton.innerText = "Enviar mi petición ✨";
+            });
+        }
+
+        function irASlide(idDestino) {
+            document.getElementById(idDestino).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('input-nombre').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                iniciarSorpresa();
+            }
+        });
+
+        function tocarPastel() {
+            const pastelContenedor = document.getElementById('contenedor-pastel');
+            const imagenPastel = document.getElementById('imagen-pastel');
+
+            pastelContenedor.classList.remove('rebote');
+            void pastelContenedor.offsetWidth; 
+            pastelContenedor.classList.add('rebote');
+
+            explosionDeFlores(25);
+
+            if (pasoPastel === 4) {
+                const bite2 = document.getElementById('audio-bite2');
+                bite2.currentTime = 0;
+                bite2.play().catch(e => console.log("Bite2 audio play prevented:", e));
+                
+                pasoPastel = 0;
+                imagenPastel.src = "pastel.PNG";
+            } else {
+                const bite = document.getElementById('audio-bite');
+                bite.currentTime = 0;
+                bite.play().catch(e => console.log("Bite audio play prevented:", e));
+
+                pasoPastel++;
+
+                if (pasoPastel === 1) {
+                    imagenPastel.src = "pastel2.PNG";
+                } else if (pasoPastel === 2) {
+                    imagenPastel.src = "pastel3.PNG";
+                } else if (pasoPastel === 3) {
+                    imagenPastel.src = "pastel4.PNG";
+                } else if (pasoPastel === 4) {
+                    imagenPastel.src = "pastel5.PNG";
+                }
+            }
+        }
+
+        function explosionDeFlores(cantidad = 70) {
+            const centroX = window.innerWidth / 2;
+            const centroY = window.innerHeight / 2;
+
+            for (let i = 0; i < cantidad; i++) {
+                const particula = document.createElement('div');
+                particula.classList.add('particula');
+
+                const img = document.createElement('img');
+                img.src = imagenesFlores[Math.floor(Math.random() * imagenesFlores.length)];
+                
+                const tamano = Math.random() * 30 + 35;
+                img.style.width = `${tamano}px`;
+                img.style.height = `${tamano}px`;
+                particula.appendChild(img);
+
+                particula.style.left = `${centroX}px`;
+                particula.style.top = `${centroY}px`;
+                document.body.appendChild(particula);
+
+                const angulo = Math.random() * Math.PI * 2;
+                const velocidad = Math.random() * (Math.max(window.innerWidth, window.innerHeight) * 0.6) + 80;
+                const destinoX = Math.cos(angulo) * velocidad;
+                const destinoY = Math.sin(angulo) * velocidad + 150;
+                const rotacion = Math.random() * 720 - 360;
+                const duracion = Math.random() * 1200 + 1000;
+
+                const animacion = particula.animate([
+                    { transform: 'translate(-50%, -50%) scale(0) rotate(0deg)', opacity: 1 },
+                    { transform: `translate(calc(-50% + ${destinoX * 0.8}px), calc(-50% + ${destinoY * 0.6}px)) scale(1.2) rotate(${rotacion * 0.5}deg)`, opacity: 1, offset: 0.6 },
+                    { transform: `translate(calc(-50% + ${destinoX}px), calc(-50% + ${destinoY}px)) scale(0.8) rotate(${rotacion}deg)`, opacity: 0 }
+                ], {
+                    duration: duracion,
+                    easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
+                });
+
+                animacion.onfinish = () => particula.remove();
+            }
+        }
+
+        function crearEstrellaSubiendo() {
+            const capa = document.getElementById('capa-estrellas');
+            const contenedorEstrella = document.createElement('div');
+            contenedorEstrella.classList.add('estrella');
+            
+            const imgEstrella = document.createElement('img');
+            imgEstrella.src = 'estrella1.PNG';
+            contenedorEstrella.appendChild(imgEstrella);
+            
+            contenedorEstrella.style.left = `${Math.random() * 100}vw`;
+            
+            const duracion = Math.random() * 3 + 3;
+            contenedorEstrella.style.animationDuration = `${duracion}s`;
+
+            capa.appendChild(contenedorEstrella);
+
+            setTimeout(() => {
+                contenedorEstrella.remove();
+            }, duracion * 1000);
+        }
+    </script>
+</body>
+</html>
